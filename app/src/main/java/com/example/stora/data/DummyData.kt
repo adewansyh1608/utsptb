@@ -1,35 +1,37 @@
 package com.example.stora.data
 
 import androidx.compose.runtime.mutableStateListOf
-
-// Menggunakan object agar menjadi singleton (satu instance di seluruh aplikasi)
 object DummyData {
-    // mutableStateListOf akan secara otomatis memberi tahu UI jika ada perubahan data
     val inventoryItemList = mutableStateListOf(
         InventoryItem(
-            name = "Laptop ASUS ROG",
-            quantity = 5,
-            description = "Laptop gaming dengan spek tinggi, prosesor i9, RTX 4090."
+            name = "Vacum Cleaner",
+            noinv = "HMSI/2025/xx/24",
+            quantity = 2,
+            category = "Elektronik",
+            condition = "Baik",
+            location = "Ruang Sekretariat HMSI",
+            description = "Digunakan untuk membersihkan lantai, karpet, dan permukaan lain dari debu dan kotoran. Jangan digunakan selain kegunaan yang telah disampaikan sebelumnya.",
+            date = "16/10/2025"
         ),
         InventoryItem(
-            name = "Keyboard Mekanikal Keychron K2",
-            quantity = 12,
-            description = "Keyboard wireless dengan brown switch, layout 75%."
+            name = "Kulkas Display Minuman",
+            noinv = "HMSI/2025/xx/12",
+            quantity = 1,
+            category = "Elektronik",
+            condition = "Baik",
+            location = "Ruang Sekretariat HMSI",
+            description = "Digunakan untuk menyimpan dan menampilkan minuman dalam kondisi dingin agar siap disajikan. Hanya boleh diisi dengan minuman jualan divisi bisnis kreatif.",
+            date = "04/08/2025"
         ),
         InventoryItem(
-            name = "Mouse Logitech MX Master 3S",
+            name = "Lemari Berkas",
+            noinv = "HMSI/2025/xx/8",
             quantity = 8,
-            description = "Mouse ergonomis untuk produktivitas, silent click."
-        ),
-        InventoryItem(
-            name = "Monitor LG UltraGear 27 inch",
-            quantity = 10,
-            description = "Monitor 144Hz dengan resolusi 2K untuk gaming dan editing."
-        ),
-        InventoryItem(
-            name = "Webcam Razer Kiyo Pro",
-            quantity = 7,
-            description = "Webcam Full HD dengan sensor cahaya adaptif."
+            category = "Perabotan",
+            condition = "Kurang Baik",
+            location = "Ruang Sekretariat HMSI",
+            description = "Lemari berkas digunakan untuk menyimpan dan mengamankan dokumen atau arsip penting HMSI. Jangan meletakkan brang lain di lemari ini.",
+            date = "/20/11/2025"
         )
     )
 }

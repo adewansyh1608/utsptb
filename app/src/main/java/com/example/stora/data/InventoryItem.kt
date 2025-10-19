@@ -1,11 +1,15 @@
 package com.example.stora.data
 
+import java.util.Date
 import java.util.UUID
-
-// Data class untuk merepresentasikan satu item di STORA
 data class InventoryItem(
-    val id: String = UUID.randomUUID().toString(), // ID unik untuk setiap item
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
+    val noinv: String,
     val quantity: Int,
-    val description: String
+    val category: String,
+    val condition : String,
+    val location: String,
+    val description: String,
+    val date: String
 )

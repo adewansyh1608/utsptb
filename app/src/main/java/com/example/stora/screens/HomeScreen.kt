@@ -2,18 +2,24 @@ package com.example.stora.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,74 +28,120 @@ import androidx.navigation.NavHostController
 import com.example.stora.data.DummyData
 import com.example.stora.data.InventoryItem
 import com.example.stora.navigation.Routes
-import kotlinx.coroutines.launch
+import com.example.stora.ui.theme.StoraBlueDark
+import com.example.stora.ui.theme.StoraWhite
+import com.example.stora.ui.theme.StoraYellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val items = DummyData.inventoryItemList
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    var searchQuery by remember { mutableStateOf("") }
+
+    val textGray = Color(0xFF585858)
+    val dividerYellow = Color(0xFFEFBF6A)
+
+    val filteredItems = remember(searchQuery, items) {
+        if (searchQuery.isBlank()) {
+            items
+        } else {
+            // --- PERUBAHAN DI BARIS INI ---
+            // Mengganti .contains menjadi .startsWith
+            items.filter { item ->
+                item.name.startsWith(searchQuery, ignoreCase = true)
+            }
+            // --- BATAS PERUBAHAN ---
+        }
+    }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            TopAppBar(
-                title = { Text("STORA") }, // Nama aplikasi di TopAppBar
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
-                )
-            )
-        },
+        containerColor = StoraBlueDark,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(Routes.ADD_ITEM_SCREEN) },
-                containerColor = MaterialTheme.colorScheme.secondary
+                containerColor = StoraYellow,
+                contentColor = StoraWhite
             ) {
-                Icon(Icons.Filled.Add, contentDescription = "Tambah Item", tint = Color.Black)
+                Icon(Icons.Filled.Add, contentDescription = "Tambah Item")
             }
         }
     ) { paddingValues ->
-        if (items.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Penyimpanan kosong. Tambahkan item baru!")
-            }
-        } else {
-            LazyColumn(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(StoraBlueDark)
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Inventaris",
+                color = StoraYellow,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+            )
+
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text("Cari inventaris disini", color = textGray)
+                },
+                leadingIcon = {
+                    Icon(Icons.Filled.Search, contentDescription = "Cari", tint = textGray)
+                },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = StoraWhite,
+                    unfocusedContainerColor = StoraWhite,
+                    disabledContainerColor = StoraWhite,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                singleLine = true
+            )
+
+            Divider(
+                color = dividerYellow,
+                thickness = 1.dp,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 8.dp)
-            ) {
-                items(items, key = { it.id }) { item ->
-                    // Animasi untuk setiap item yang muncul di daftar
-                    AnimatedVisibility(
-                        visible = true, // Selalu true, untuk trigger animasi saat item ditambahkan
-                        enter = fadeIn(animationSpec = tween(500)) + slideInVertically(initialOffsetY = { it / 2 })
-                    ) {
-                        InventoryItemCard(item = item) {
-                            // Navigasi ke detail dengan mengirim ID item
-                            navController.navigate(Routes.detailScreen(item.id))
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 8.dp)
+            )
+
+            if (items.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Penyimpanan kosong.", color = StoraWhite)
+                }
+            } else if (filteredItems.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Tidak ada hasil untuk \"$searchQuery\"", color = StoraWhite)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+                    items(filteredItems, key = { it.id }) { item ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn(animationSpec = tween(500)) + slideInVertically(initialOffsetY = { it / 2 })
+                        ) {
+                            InventoryItemCard(item = item) {
+                                navController.navigate(Routes.detailScreen(item.id))
+                            }
                         }
                     }
                 }
-            }
-        }
-
-        // Efek untuk menampilkan Snackbar saat item baru ditambahkan
-        LaunchedEffect(navController.currentBackStackEntry) {
-            val newItemAdded = navController.currentBackStackEntry
-                ?.savedStateHandle?.get<Boolean>("newItemAdded")
-            if (newItemAdded == true) {
-                scope.launch {
-                    snackbarHostState.showSnackbar("Item baru berhasil ditambahkan!")
-                }
-                // Reset state agar Snackbar tidak muncul lagi saat re-compose
-                navController.currentBackStackEntry?.savedStateHandle?.set("newItemAdded", false)
             }
         }
     }
@@ -97,32 +149,71 @@ fun HomeScreen(navController: NavHostController) {
 
 @Composable
 fun InventoryItemCard(item: InventoryItem, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 8.dp)
-            .clickable(onClick = onClick), // Memberikan efek ripple saat diklik
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    val textGray = Color(0xFF585858)
+
+    // Menambahkan animasi fade dan scale
+    var isVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        // Set animasi untuk fade-in dan scale-up
+        isVisible = true
+    }
+
+    // Menggunakan AnimatedVisibility untuk membuat animasi muncul
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn(animationSpec = tween(500)) + scaleIn(initialScale = 0.8f, animationSpec = tween(500))
     ) {
-        Row(
+        Card(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(containerColor = StoraWhite)
         ) {
-            Text(
-                text = item.name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = "Qty: ${item.quantity}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.SemiBold
-            )
+            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(16.dp)
+                        .background(StoraYellow)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = item.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = StoraBlueDark
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = item.noinv,
+                        color = textGray,
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Filled.Widgets,
+                            contentDescription = "Jumlah",
+                            tint = textGray,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "= ${item.quantity}",
+                            color = textGray,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
         }
     }
 }

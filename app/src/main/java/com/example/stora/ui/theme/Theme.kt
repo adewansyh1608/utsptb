@@ -7,30 +7,41 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.compose.ui.graphics.Color
-// Palet warna untuk mode gelap
+
+// Palet warna untuk mode gelap (Biarkan default atau sesuaikan nanti)
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkPurple,
-    secondary = AccentCyan,
-    tertiary = Pink80,
+    primary = StoraBlueLight,
+    secondary = StoraYellow,
+    tertiary = StoraBlue,
     background = Color(0xFF121212),
     surface = Color(0xFF121212),
+    onPrimary = StoraBlueDark,
+    onSecondary = StoraBlueDark,
+    onTertiary = StoraWhite,
+    onBackground = StoraWhite,
+    onSurface = StoraWhite,
 )
 
-// Palet warna untuk mode terang
+// Palet warna untuk mode terang (Sesuai desain baru)
 private val LightColorScheme = lightColorScheme(
-    primary = PrimaryPurple,
-    secondary = AccentCyan,
-    tertiary = Pink40,
-    background = BackgroundGrey,
-    surface = Color(0xFFFFFBFE),
+    primary = StoraBlueDark,
+    secondary = StoraBlue,
+    tertiary = StoraYellow,
+    background = StoraBlueDark,
+    surface = StoraWhite,
+    onPrimary = StoraWhite,
+    onSecondary = StoraWhite,
+    onTertiary = StoraBlueDark,
+    onBackground = StoraWhite,
+    onSurface = StoraBlueDark
 )
 
 @Composable
-fun STORATheme( // Nama fungsi tema diubah
+fun STORATheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -42,14 +53,16 @@ fun STORATheme( // Nama fungsi tema diubah
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // Mengatur warna status bar agar sesuai dengan background biru tua
+            window.statusBarColor = StoraBlueDark.toArgb()
+            // Mengatur ikon status bar (jam, sinyal) menjadi terang
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography, // Asumsi file Typography.kt Anda sudah ada
         content = content
     )
 }
