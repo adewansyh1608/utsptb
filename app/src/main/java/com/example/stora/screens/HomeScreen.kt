@@ -16,10 +16,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,12 +45,11 @@ fun HomeScreen(navController: NavHostController) {
         if (searchQuery.isBlank()) {
             items
         } else {
-            // --- PERUBAHAN DI BARIS INI ---
-            // Mengganti .contains menjadi .startsWith
+
             items.filter { item ->
                 item.name.startsWith(searchQuery, ignoreCase = true)
             }
-            // --- BATAS PERUBAHAN ---
+
         }
     }
 
@@ -103,12 +102,12 @@ fun HomeScreen(navController: NavHostController) {
                 singleLine = true
             )
 
-            Divider(
-                color = dividerYellow,
-                thickness = 1.dp,
+            HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 8.dp)
+                    .padding(top = 16.dp, bottom = 8.dp),
+                thickness = 1.dp,
+                color = dividerYellow
             )
 
             if (items.isEmpty()) {
@@ -151,15 +150,15 @@ fun HomeScreen(navController: NavHostController) {
 fun InventoryItemCard(item: InventoryItem, onClick: () -> Unit) {
     val textGray = Color(0xFF585858)
 
-    // Menambahkan animasi fade dan scale
+
     var isVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        // Set animasi untuk fade-in dan scale-up
+
         isVisible = true
     }
 
-    // Menggunakan AnimatedVisibility untuk membuat animasi muncul
+
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn(animationSpec = tween(500)) + scaleIn(initialScale = 0.8f, animationSpec = tween(500))

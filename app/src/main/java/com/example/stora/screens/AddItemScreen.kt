@@ -1,6 +1,5 @@
 package com.example.stora.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -35,15 +34,15 @@ import kotlinx.coroutines.delay
 fun AddItemScreen(navController: NavHostController) {
     var isVisible by remember { mutableStateOf(false) }
 
-    // Efek animasi saat layar pertama kali dibuka
+
     LaunchedEffect(Unit) {
-        delay(100) // Sedikit delay agar animasi berjalan mulus
+        delay(100)
         isVisible = true
     }
 
-    // Animasi untuk ketinggian latar belakang biru
+
     val blueBgWeight by animateFloatAsState(
-        targetValue = if (isVisible) 0.15f else 1f, // 15% tinggi saat visible
+        targetValue = if (isVisible) 0.15f else 1f,
         animationSpec = tween(durationMillis = 800),
         label = "Blue BG Weight"
     )
@@ -51,35 +50,34 @@ fun AddItemScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(StoraBlueDark) // Background default putih
+            .background(StoraBlueDark)
     ) {
-        // --- BAGIAN BIRU (ATAS) ---
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(blueBgWeight) // Tinggi animatif
+                .fillMaxHeight(blueBgWeight)
                 .background(StoraBlueDark),
             contentAlignment = Alignment.Center
         ) {
-            // Top Bar Kustom
+
             StoraTopBar(
                 title = "Add Items",
                 onBackClick = {
-                    // TODO: Tambahkan logika animasi keluar sebelum popBackStack jika diinginkan
                     navController.popBackStack()
                 }
             )
         }
 
-        // --- BAGIAN PUTIH (BAWAH) ---
+
         Box(
             modifier = Modifier
-                .fillMaxSize() // Mengisi sisa tinggi
+                .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .background(StoraWhite)
-                .padding(top = 24.dp) // Padding dari lekukan atas
+                .padding(top = 24.dp)
         ) {
-            // Konten Form (muncul dengan animasi)
+
             androidx.compose.animation.AnimatedVisibility(
                 visible = isVisible,
                 enter = slideInVertically(animationSpec = tween(800, delayMillis = 200)) { it } + fadeIn(animationSpec = tween(800, delayMillis = 200)),
@@ -103,12 +101,12 @@ fun StoraTopBar(title: String, onBackClick: () -> Unit) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Kembali",
-                tint = StoraYellow // Warna icon panah
+                tint = StoraYellow
             )
         }
         Text(
             text = title,
-            color = StoraYellow, // Warna teks title
+            color = StoraYellow,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 16.dp)
@@ -132,7 +130,7 @@ fun AddItemForm(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp)
-            .verticalScroll(rememberScrollState()), // Agar bisa di-scroll
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         StoraFormField(
@@ -176,7 +174,7 @@ fun AddItemForm(navController: NavHostController) {
             onValueChange = { description = it; isError = false },
             label = "Deskripsi",
             singleLine = false,
-            modifier = Modifier.height(120.dp) // Tinggi khusus untuk deskripsi
+            modifier = Modifier.height(120.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -189,7 +187,6 @@ fun AddItemForm(navController: NavHostController) {
             )
         }
 
-        // Tombol Save
         Button(
             onClick = {
                 val qtyInt = quantity.toIntOrNull()
@@ -218,17 +215,16 @@ fun AddItemForm(navController: NavHostController) {
                 .height(50.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = StoraYellow, // Warna background
-                contentColor = StoraBlueDark    // Warna font
+                containerColor = StoraYellow,
+                contentColor = StoraBlueDark
             )
         ) {
             Text("Save", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
-        Spacer(modifier = Modifier.height(32.dp)) // Padding di bawah
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
-// Composable kustom untuk form field
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoraFormField(
@@ -239,8 +235,7 @@ fun StoraFormField(
     singleLine: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
-    val fieldColor = Color(0xFFE9E4DE) // Warna background kolom
-
+    val fieldColor = Color(0xFFE9E4DE)
     Column(modifier = Modifier.padding(bottom = 16.dp)) {
         Text(
             text = label,

@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Palet warna untuk mode gelap (Biarkan default atau sesuaikan nanti)
 private val DarkColorScheme = darkColorScheme(
     primary = StoraBlueLight,
     secondary = StoraYellow,
@@ -26,7 +25,6 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = StoraWhite,
 )
 
-// Palet warna untuk mode terang (Sesuai desain baru)
 private val LightColorScheme = lightColorScheme(
     primary = StoraBlueDark,
     secondary = StoraBlue,
@@ -53,16 +51,16 @@ fun STORATheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Mengatur warna status bar agar sesuai dengan background biru tua
+
             window.statusBarColor = StoraBlueDark.toArgb()
-            // Mengatur ikon status bar (jam, sinyal) menjadi terang
+
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Asumsi file Typography.kt Anda sudah ada
+        typography = Typography,
         content = content
     )
 }

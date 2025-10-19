@@ -1,6 +1,5 @@
 package com.example.stora.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,15 +32,13 @@ fun DetailScreen(navController: NavHostController, itemId: String?) {
     val item = DummyData.inventoryItemList.find { it.id == itemId }
     var isVisible by remember { mutableStateOf(false) }
 
-    // Efek animasi saat layar pertama kali dibuka
     LaunchedEffect(Unit) {
-        delay(100) // Sedikit delay agar animasi berjalan mulus
+        delay(100)
         isVisible = true
     }
 
-    // Animasi untuk ketinggian latar belakang biru
     val blueBgWeight by animateFloatAsState(
-        targetValue = if (isVisible) 0.15f else 1f, // 15% tinggi saat visible
+        targetValue = if (isVisible) 0.15f else 1f,
         animationSpec = tween(durationMillis = 800),
         label = "Blue BG Weight"
     )
@@ -48,17 +46,17 @@ fun DetailScreen(navController: NavHostController, itemId: String?) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(StoraBlueDark) // Background default putih
+            .background(StoraBlueDark)
     ) {
-        // --- BAGIAN BIRU (ATAS) ---
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(blueBgWeight) // Tinggi animatif
+                .fillMaxHeight(blueBgWeight)
                 .background(StoraBlueDark),
             contentAlignment = Alignment.Center
         ) {
-            // Top Bar Kustom
+
             StoraTopBar(
                 title = "Detail",
                 onBackClick = {
@@ -67,14 +65,14 @@ fun DetailScreen(navController: NavHostController, itemId: String?) {
             )
         }
 
-        // --- BAGIAN PUTIH (BAWAH) ---
+
         Box(
             modifier = Modifier
-                .fillMaxSize() // Mengisi sisa tinggi
+                .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .background(StoraWhite)
         ) {
-            // Konten Detail (muncul dengan animasi)
+
             androidx.compose.animation.AnimatedVisibility(
                 visible = isVisible,
                 enter = slideInVertically(animationSpec = tween(800, delayMillis = 200)) { it } + fadeIn(animationSpec = tween(800, delayMillis = 200)),
@@ -96,10 +94,10 @@ fun DetailScreen(navController: NavHostController, itemId: String?) {
 fun DetailContent(item: com.example.stora.data.InventoryItem) {
     val textGray = Color(0xFF585858)
 
-    // Box utama untuk menampung konten dan footer
+
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // Konten yang bisa di-scroll
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,26 +105,26 @@ fun DetailContent(item: com.example.stora.data.InventoryItem) {
                 .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Nama Inventaris
+
             Text(
                 text = item.name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black, // Sesuai gambar
+                color = Color.Black,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            // No Inventaris
+
             Text(
                 text = item.noinv,
                 fontSize = 16.sp,
-                color = textGray, // Warna abu-abu
+                color = textGray,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Info Detail (Rata Kiri)
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
@@ -139,16 +137,16 @@ fun DetailContent(item: com.example.stora.data.InventoryItem) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Garis Pemisah
-            Divider(
-                color = StoraYellow,
+
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth()
+                color = StoraYellow
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Deskripsi
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
@@ -168,23 +166,23 @@ fun DetailContent(item: com.example.stora.data.InventoryItem) {
                 )
             }
 
-            // Spacer untuk memberi ruang agar footer tidak menutupi konten
+
             Spacer(modifier = Modifier.height(100.dp))
         }
 
-        // Footer "Dibuat pada"
+
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // Menempel di bawah
+                .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(StoraBlueDark.copy(alpha = 0.13f)) // Sesuai instruksi: transparansi 13%
+                .background(StoraBlueDark.copy(alpha = 0.13f))
                 .padding(horizontal = 24.dp, vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Dibuat pada ${item.date}",
-                color = Color.Black.copy(alpha = 0.7f) // Warna font agar kontras
+                color = Color.Black.copy(alpha = 0.7f)
             )
         }
     }
@@ -198,22 +196,22 @@ fun DetailInfoRow(label: String, value: String) {
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Teks Label
+
         Text(
             text = label,
-            modifier = Modifier.width(100.dp), // Lebar tetap untuk label
+            modifier = Modifier.width(100.dp),
             fontSize = 16.sp,
             color = Color.Black,
             fontWeight = FontWeight.Normal
         )
-        // Teks Titik Dua
+
         Text(
             text = ": ",
             fontSize = 16.sp,
             color = Color.Black,
             fontWeight = FontWeight.Normal
         )
-        // Teks Value
+
         Text(
             text = value,
             fontSize = 16.sp,
